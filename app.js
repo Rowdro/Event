@@ -816,10 +816,24 @@
             const verticals = [['tech-ai', 'cpu', '#818cf8', '128 Events'], ['music', 'music', '#f472b6', '96 Events'], ['business', 'brief', '#38bdf8', '48 Events'], ['creative', 'palette', '#fbbf24', '72 Events'], ['esports', 'gamepad', '#a78bfa', '56 Events'], ['wellness', 'heart', '#34d399', '34 Events']];
             const tsts = [['Ventra transmitted our 15,000-person summit without a single queue anomaly. The NFC VIP authentication is genuinely in a class of its own.', 'Isabella Ferreira', 'Production Director, Global Tech Summit', 'isabellaf'], ['The dynamic QR pass validation cadence eliminated organized touting at our last festival. We have never felt safer running a front gate.', 'Rafael Barbosa', 'Festival Director, PULSE LIVE', 'rafaelb'], ['The zero-paradigm gate check-in gives our VIP attendees a truly seamless arrival. We are never going back to paper doorways.', 'Sarah Chen', 'Head of Experiences, Solara Xpanse', 'sarahchenthird']];
             const featCards = [['edit', 'Curate & Architect', 'Design multi-tier arenas with precise tiered seating charts, VIP gated zones, and zero-friction attendee flows that thrive under peak demand.', [['Seating Engine', 'Dynamic'], ['VIP Zones', 'Gated']]], ['qr', 'Glass Ticketing & Dynamic QR', 'Cryptographically sealed, rotating QR hashes deter bot traffic and scalping. Each pass is tied to a single attendee with instant revocation.', [['QR Rotation', '15s Cipher'], ['ECDSA', '256-bit']]], ['radio', 'Telemetry & Gate Triage', 'Process 800+ admissions per minute with zero-latency turnstiles. Route live congestion cues to staging zones for instant operational response.', [['Ingest Latency', '0.14s Avg'], ['Throughput', '800+/min']]]];
-            after(initCineHero);
-            return (db.meta.maintenance ? '<div class="banner">' + ic('warn', 13) + ' Scheduled mesh maintenance window \u2014 ticketing remains fully operational.</div>' : '')
-                + topNav('home')
-                + '<section class="cine-hero" id="cineHero"><div class="cine-stage">'
+            const isDesktopHero = typeof window !== 'undefined' && window.innerWidth >= 1200;
+            if (isDesktopHero) after(initCineHero);
+            const staticHero = '<section class="hero-sec"><div class="wrap hero-in"><div class="hero-copy">'
+                + '<h1 class="rise" style="--d:1">Orchestrate Unforgettable <span class="grad-text">Experiences</span> in Pure Glass Fidelity</h1>'
+                + '<p class="sub rise" style="--d:2">Eventora gives producers of high-stakes summits, immersive music festivals and global arena broadcasts a single operating system \u2014 from the first ticket sold to the final gate telemetry.</p>'
+                + '<div class="hero-cta rise" style="--d:3"><a class="btn btn-p lg" href="#/events">' + ic('search', 16) + ' Explore Events</a><a class="btn btn-g lg" href="#/register?role=organizer">' + ic('spark', 16) + ' Register as Organizer</a></div>'
+                + '<div class="hero-trust rise" style="--d:4"><div><b class="tnum">500+</b><span>Events Hosted</span></div><div><b class="tnum" style="color:var(--green)">99.99%</b><span>Live Uptime</span></div><div><b>' + ic('qr', 19) + '</b><span>Dynamic QR & NFC</span></div><div><b>' + ic('shield', 19) + '</b><span>Zero-Trust Gates</span></div></div>'
+                + '</div><div class="hero-stage rise" style="--d:2">'
+                + (heroEv ? '<div class="glass-hi stage-main"><div class="hv-top">' + statePill(heroEv) + '<span class="pill pill-vip">VIP ' + Math.max(heroPct, 62) + '% Sold</span><span class="mono">REAL-TIME INVENTORY</span></div>'
+                    + '<a class="hv-card" href="#/event/' + heroEv.id + '"><img src="' + coverOf(heroEv) + '" alt="' + esc(heroEv.title) + '"><div class="ovl"></div><div class="cnt">'
+                    + '<span class="pill pill-live"><span class="dot g pulse"></span>' + (evLive(heroEv) ? 'Live Now' : 'On Sale') + ' \u00b7 ' + datePill(heroEv.startDate, heroEv.endDate) + '</span>'
+                    + '<h4>' + esc(heroEv.title) + '</h4><p>' + fmtN(heroRegs) + ' of ' + fmtN(heroEv.capacity) + ' delegates confirmed.</p></div></a>'
+                    + (london ? '<div class="hv-row"><span class="dot g pulse"></span><div><div class="t">LONDON SONIC ARENA</div><div class="s">The O2 Meridian Complex \u00b7 ' + fmtDate(london.startDate) + '</div></div><a class="btn btn-p" href="#/event/' + london.id + '">Claim VIP Pass</a></div>' : '') + '</div>'
+                    + '<div class="glass float-card fc1"><span class="fc-ic" style="color:var(--green)">' + ic('users', 16) + '</span><div class="fc-t"><b class="tnum">' + fmtN(checkedInTotal) + '</b><span class="small mut">Checked-in across the live mesh</span></div></div>'
+                    + '<div class="glass float-card fc2"><span class="fc-ic" style="color:var(--cyan2)">' + ic('ticket', 16) + '</span><div class="fc-t"><b class="tnum">' + fmtN(passVol) + '</b><span class="small mut">Passes issued on this node</span></div></div>'
+                    : '<div class="glass-hi stage-main"><div class="empty"><b>No live events yet</b><p>Publish your first arena from the wizard.</p><a class="btn btn-p" href="#/register?role=organizer">Create Event</a></div></div>')
+                + '</div></div></section>';
+            const cineHero = '<section class="cine-hero" id="cineHero"><div class="cine-stage">'
                 + '<video id="cineVideo" class="cine-video" muted playsinline webkit-playsinline="true" x5-playsinline="true" disablePictureInPicture preload="auto"><source src="assets/hero-cinema.mp4" type="video/mp4"></video>'
                 + '<div class="cine-vignette"></div><div class="cine-shade"></div><div class="cine-grain"></div>'
                 + '<div class="cine-amb amb1"></div><div class="cine-amb amb2"></div><div class="cine-amb amb3"></div>'
@@ -830,7 +844,6 @@
                 + '<h1 class="cine-h1">Orchestrate Unforgettable <span class="grad-text">Experiences</span> in Pure Glass Fidelity</h1>'
                 + '<p class="cine-sub">Eventora gives producers of high-stakes summits, immersive music festivals and global arena broadcasts a single operating system \u2014 from the first ticket sold to the final gate telemetry.</p>'
                 + '<div class="hero-cta"><a class="btn btn-p lg" href="#/events">' + ic('search', 16) + ' Explore Events</a><a class="btn btn-g lg" href="#/register?role=organizer">' + ic('spark', 16) + ' Register as Organizer</a></div>'
-                + '<span class="cine-hint">Scroll to enter ' + ic('chevD', 14) + '</span>'
                 + '</div></div>'
 
                 // Scene 1 \u2014 LEFT: trust at scale
@@ -922,8 +935,10 @@
                 + '</div>'
                 + '</div>'
                 + '</div>'
-
-                + '</div></section>'
+                + '</div></section>';
+            return (db.meta.maintenance ? '<div class="banner">' + ic('warn', 13) + ' Scheduled mesh maintenance window \u2014 ticketing remains fully operational.</div>' : '')
+                + topNav('home')
+                + (isDesktopHero ? cineHero : staticHero)
                 + (mq.length ? '<div class="wrap"><div class="marq"><div class="marq-in">' + mqSetHTML(mq) + mqSetHTML(mq) + '</div></div></div>' : '')
                 + '<section class="land-sec wrap" id="verticals"><div class="sec-h"><span class="eyebrow">' + ic('globe', 13) + ' Curated Spheres</span><h2>Explore Premium Verticals</h2><p>From main-stage stadium festivals to confidential executive conclaves, tailor your arena.</p></div>'
                 + '<div class="vgrid">' + verticals.map(v => '<a class="glass vcard" href="#/events?cat=' + v[0] + '"><span class="vt" style="color:' + v[2] + ';background:' + v[2] + '14;border-color:' + v[2] + '55">' + ic(v[1], 19) + '</span><b>' + esc(catOf(v[0]).name) + '</b><span>' + v[3] + '</span></a>').join('') + '</div></section>'
