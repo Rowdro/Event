@@ -1801,8 +1801,8 @@
             .cine-mini { grid-template-columns: repeat(3, 1fr) }
         }
         @media (max-width: 800px) {
-            .cine-stage { top: 0; height: 100vh; height: 100svh }
-            .cine-scene { padding: 32px 22px; align-items: center !important; text-align: center !important }
+            .cine-stage { min-height: 480px }
+            .cine-scene { padding: 32px 22px; align-items: center !important; text-align: center !important; overflow-y: auto }
             .cine-box, .cine-box.intro { width: 100%; max-width: 440px; align-items: center !important; text-align: center }
             .cine-scene.right .cine-box { align-items: center }
             .cine-line, .cine-sub { margin-left: auto; margin-right: auto }
@@ -1812,7 +1812,7 @@
             .cine-glass.hero-trust { flex-direction: column; gap: 14px }
             .cine-glass.hero-trust > div { border-left: none; padding: 0 }
             .cine-kpis, .cine-vgrid { grid-template-columns: 1fr }
-            .cine-scene.split { flex-direction: column; justify-content: center; gap: 22px; overflow-y: auto }
+            .cine-scene.split { flex-direction: column; justify-content: center; gap: 22px }
             .cine-col, .cine-col.side { flex: none; width: 100%; max-width: 440px }
             .cine-assure { justify-content: center; gap: 8px 14px }
             .cine-marks { justify-content: center }

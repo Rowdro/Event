@@ -768,13 +768,29 @@
         function initCineHero() {
             const video = document.getElementById('cineVideo');
             if (!video) return;
-            video.pause(); video.muted = true;
-            video.addEventListener('loadedmetadata', () => { cineDuration = Number.isFinite(video.duration) ? video.duration : 10; cineRender(true) });
+            video.muted = true; video.defaultMuted = true;
+            const kickDecode = () => {
+                /* iOS Safari won't decode/paint a frame from currentTime alone until the
+                   video has actually played once — scrubbing before that shows a black
+                   rectangle. A silent play() -> immediate pause() forces that first decode. */
+                const p = video.play();
+                if (p && typeof p.then === 'function') p.then(() => video.pause()).catch(() => {});
+                else video.pause();
+            };
+            video.addEventListener('loadedmetadata', () => { cineDuration = Number.isFinite(video.duration) ? video.duration : 10; kickDecode(); cineRender(true) });
+            if (video.readyState >= 1) kickDecode();
             cineRender(true);
+            /* Mobile browsers can throttle/coalesce 'scroll' events during momentum
+               scrolling, which makes the scrub feel laggy or stuck. A cheap interval
+               tick covers that gap; it's registered in the router's own `timers` array
+               so render() already clears it automatically on every navigation. */
+            timers.push(setInterval(cineRequestRender, 90));
             if (!window.__cineBound) {
                 window.__cineBound = true;
                 window.addEventListener('scroll', cineRequestRender, { passive: true });
+                window.addEventListener('touchmove', cineRequestRender, { passive: true });
                 window.addEventListener('resize', () => cineRender(true), { passive: true });
+                window.addEventListener('orientationchange', () => setTimeout(() => cineRender(true), 120));
                 window.addEventListener('pointermove', e => {
                     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
                     cineTX = e.clientX / window.innerWidth - .5; cineTY = e.clientY / window.innerHeight - .5;
@@ -804,7 +820,7 @@
             return (db.meta.maintenance ? '<div class="banner">' + ic('warn', 13) + ' Scheduled mesh maintenance window \u2014 ticketing remains fully operational.</div>' : '')
                 + topNav('home')
                 + '<section class="cine-hero" id="cineHero"><div class="cine-stage">'
-                + '<video id="cineVideo" class="cine-video" muted playsinline preload="auto"><source src="assets/hero-cinema.mp4" type="video/mp4"></video>'
+                + '<video id="cineVideo" class="cine-video" muted playsinline webkit-playsinline="true" x5-playsinline="true" disablePictureInPicture preload="auto"><source src="assets/hero-cinema.mp4" type="video/mp4"></video>'
                 + '<div class="cine-vignette"></div><div class="cine-shade"></div><div class="cine-grain"></div>'
                 + '<div class="cine-amb amb1"></div><div class="cine-amb amb2"></div><div class="cine-amb amb3"></div>'
 
