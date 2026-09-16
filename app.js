@@ -637,9 +637,9 @@
                         : '<a href="#/admin">Command Center</a><a href="#/admin/stages">Stages</a><a href="#/admin/guests">Guest Flow</a><a href="#/admin/telemetry">Telemetry</a><a href="#/admin/settings">Settings</a>');
             return '<header class="' + (u ? 'cnav' : 'pnav') + '"><div class="nav-in">' + brandHTML(34) + (role === 'admin' ? '<span class="brand-pill">Superadmin</span>' : '')
                 + '<button class="search-pill" data-action="open-palette" aria-label="Search">' + ic('search', 15) + '<span>Global telemetry search</span><kbd>\u2318K</kbd></button>'
-                + '<nav class="nav-links">' + links + '</nav><div class="nav-right">' + syspill + rightSide + '</div></div>'
+                + '<nav class="nav-links">' + links + '</nav><div class="nav-right">' + syspill + rightSide + '</div></div></header>'
                 + '<div class="mmenu-backdrop" id="mmenu-backdrop" data-close="mmenu"></div>'
-                + '<div class="mmenu" id="mmenu"><div class="mmenu-head"><span class="mmenu-title">Menu</span><button class="icon-btn" data-close="mmenu" aria-label="Close menu">' + ic('x', 18) + '</button></div><div class="mmenu-links">' + mmenu + '</div></div></header>';
+                + '<div class="mmenu" id="mmenu"><div class="mmenu-head"><span class="mmenu-title">Menu</span><button class="icon-btn" data-close="mmenu" aria-label="Close menu">' + ic('x', 18) + '</button></div><div class="mmenu-links">' + mmenu + '</div></div>';
         }
         function notifDD() {
             const list = myNotifs().slice(0, 5);

@@ -1806,7 +1806,7 @@
             .cine-box, .cine-box.intro { width: 100%; max-width: 440px; align-items: center !important; text-align: center }
             .cine-scene.right .cine-box { align-items: center }
             .cine-line, .cine-sub { margin-left: auto; margin-right: auto }
-            .cine-chips, .cine-floats, .hero-cta { justify-content: center }
+            .cine-chips, .cine-floats { justify-content: center }
             .cine-h1 { font-size: clamp(32px, 9.5vw, 50px) }
             .cine-h2 { font-size: clamp(27px, 8vw, 38px) }
             .cine-glass.hero-trust { flex-direction: column; gap: 14px }
@@ -4803,6 +4803,7 @@
             .rv-grid,
             .tk-grid,
             .mode-grid,
+            .mx-grid,
             .cols3 {
                 grid-template-columns: 1fr !important
             }
@@ -4823,8 +4824,24 @@
                 padding: 28px 22px
             }
 
+            .logos {
+                gap: 18px 26px;
+                justify-content: flex-start
+            }
+
             .cta-form {
-                flex-direction: column
+                flex-direction: column;
+                gap: 12px
+            }
+
+            .cta-form .inp {
+                height: 48px;
+                font-size: 15px
+            }
+
+            .cta-form button {
+                width: 100%;
+                height: 48px
             }
 
             .cta-band {
