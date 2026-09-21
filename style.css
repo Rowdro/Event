@@ -4832,6 +4832,18 @@
                 grid-template-columns: 1fr !important
             }
 
+            .view > section {
+                margin-top: 28px
+            }
+
+            .view > section:first-child {
+                margin-top: 0
+            }
+
+            .matrix, .cta-band {
+                margin-top: 4px
+            }
+
             .hero-sec {
                 padding: 44px 0 24px;
                 overflow: hidden
