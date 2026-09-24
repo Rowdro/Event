@@ -260,6 +260,37 @@
         const PAY_METHODS_INTL = [['card', 'Visa / Mastercard', '#38bdf8', 'card', 'Ending redirect to your bank'], ['paypal', 'PayPal', '#003087', 'PayPal', 'Pay via balance, bank or card']];
         const payMethodsFor = code => code === 'BDT' ? PAY_METHODS_BDT : PAY_METHODS_INTL;
         const PAY_METHODS = PAY_METHODS_BDT; /* legacy alias for spots without currency context */
+        /* Small brand-styled wordmark/glyph badges for the checkout payment picker \u2014 rendered
+           as self-contained inline SVG (no external logo assets to fetch) so bKash, Nagad,
+           Rocket, Visa, Mastercard and PayPal are each instantly recognizable by their real
+           brand colors and marks instead of a generic card icon or plain text label. */
+        function payLogoSVG(key) {
+            const F = 'font-family:Arial,Helvetica,sans-serif';
+            const logos = {
+                bkash: '<svg viewBox="0 0 84 32" width="46" height="18" xmlns="http://www.w3.org/2000/svg" aria-label="bKash">'
+                    + '<circle cx="12" cy="16" r="11" fill="#e2136e"/>'
+                    + '<path d="M12 8.5c3.4 0 6 2.7 6 6.2 0 2.7-1.6 4.9-4 5.8l-.4-1.7c1.6-.7 2.6-2.2 2.6-4.1 0-2.5-1.8-4.4-4.2-4.4-2.4 0-4.2 1.9-4.2 4.4 0 1.9 1 3.4 2.6 4.1l-.4 1.7c-2.4-.9-4-3.1-4-5.8 0-3.5 2.6-6.2 6-6.2z" fill="#fff"/>'
+                    + '<text x="28" y="21" ' + F + ' font-weight="800" font-style="italic" font-size="15" fill="#e2136e">bKash</text>'
+                    + '</svg>',
+                nagad: '<svg viewBox="0 0 84 32" width="46" height="18" xmlns="http://www.w3.org/2000/svg" aria-label="Nagad">'
+                    + '<path d="M4 16 12 8l8 8-8 8z" fill="#ec1d25"/><path d="M12 8l8 8-8 8V8z" fill="#f6921e"/>'
+                    + '<text x="26" y="21" ' + F + ' font-weight="800" font-size="14" fill="#ec1d25">Nagad</text>'
+                    + '</svg>',
+                rocket: '<svg viewBox="0 0 84 32" width="46" height="18" xmlns="http://www.w3.org/2000/svg" aria-label="Rocket">'
+                    + '<path d="M12 4c3 2 5 6 5 10.5 0 2-.5 3.8-1.3 5.3l-3.7 3-3.7-3C7.5 18.3 7 16.5 7 14.5 7 10 9 6 12 4z" fill="#8c3494"/><circle cx="12" cy="13" r="2.1" fill="#fff"/><path d="M9 21l-2 4 3.5-1.6L12 26l1.5-2.6L17 25l-2-4" fill="#8c3494"/>'
+                    + '<text x="26" y="21" ' + F + ' font-weight="800" font-size="13" fill="#8c3494">Rocket</text>'
+                    + '</svg>',
+                paypal: '<svg viewBox="0 0 84 32" width="52" height="18" xmlns="http://www.w3.org/2000/svg" aria-label="PayPal">'
+                    + '<text x="2" y="22" ' + F + ' font-weight="800" font-style="italic" font-size="17" fill="#003087">Pay</text>'
+                    + '<text x="32" y="22" ' + F + ' font-weight="800" font-style="italic" font-size="17" fill="#009cde">Pal</text>'
+                    + '</svg>',
+                card: '<svg viewBox="0 0 84 32" width="52" height="20" xmlns="http://www.w3.org/2000/svg" aria-label="Visa and Mastercard">'
+                    + '<text x="0" y="21" ' + F + ' font-weight="800" font-style="italic" font-size="14" fill="#1a1f71">VISA</text>'
+                    + '<circle cx="63" cy="16" r="9" fill="#eb001b"/><circle cx="74" cy="16" r="9" fill="#f79e1b" fill-opacity=".88"/>'
+                    + '</svg>'
+            };
+            return logos[key] || ic('card', 16);
+        }
         const orderByRef = ref => db.orders.find(o => o.intent && o.intent.ref === ref);
         function payPill(s) { const m = { pending: ['pill-warn', 'Pending'], paid: ['pill-green', 'Paid'], failed: ['pill-red', 'Failed'], cancelled: ['pill-mut', 'Cancelled'], refunded: ['pill-vio', 'Refunded'] }; const x = m[s] || m.pending; return '<span class="pill ' + x[0] + '">' + x[1] + '</span>' }
         const ROLE_HOME = { attendee: '#/attendee/dashboard', organizer: '#/organizer/dashboard', admin: '#/admin' };
@@ -547,6 +578,17 @@
                 + '<p style="font:600 15px var(--fd);color:var(--text);margin-bottom:8px">This event has already taken place.</p>'
                 + '<p class="mut" style="margin-bottom:22px">Ticket purchases are no longer available for this experience.</p>'
                 + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-p" data-go="#/events">' + ic('search', 14) + ' Browse Events</button><button class="btn btn-g" data-close>Close</button></div></div>');
+        }
+        /* Shown when someone hits "Continue with Google" from the Register tab but that Google
+           email is already tied to an existing Eventora account \u2014 a clear, unmissable pop
+           instead of a toast that's easy to miss, pointing them straight at Sign In. */
+        function openDuplicateAccountModal(email) {
+            openModal('<div class="modal-h"><h3>Account Already Exists</h3><button class="mclose" data-close>' + ic('x', 16) + '</button></div>'
+                + '<div class="modal-b" style="text-align:center">'
+                + '<div class="okring amb" style="width:72px;height:72px;margin:6px auto 18px">' + ic('user', 30, 2) + '</div>'
+                + '<p style="font:600 15px var(--fd);color:var(--text);margin-bottom:8px">You already have an Eventora account' + (email ? ' for <span style="color:var(--cyan2)">' + esc(email) + '</span>' : '') + '.</p>'
+                + '<p class="mut" style="margin-bottom:22px">Please sign in instead to continue \u2014 no need to create a second account.</p>'
+                + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-p" data-action="goto-login">' + ic('door', 14) + ' Sign In to Continue</button><button class="btn btn-g" data-close>Cancel</button></div></div>');
         }
         function toast(msg, type) {
             type = type || 'ok';
@@ -1107,7 +1149,7 @@
                 ['For Organizers', [['How do I create an event?', 'Sign in with an Organizer account and open Create Event. The 5-step wizard covers basics, branding, dates & venue, tiered pricing in the currency you choose (including free tiers), run-of-show and speakers \u2014 then publish to the live mesh. Everything autosaves as a draft.'], ['How is revenue calculated?', 'Every paid order records unit price, quantity, platform fee and total in the event\u2019s own listed currency. Dashboard and Analytics chart settled revenue per day and per event directly from the order ledger; free RSVPs add 0 but count toward attendance.'], ['Can I manage check-ins at the gate?', 'Yes \u2014 the Attendee Directory supports live search, manual check-in with gate assignment, RFID lanyard toggles, tier reassignment, refunds and a full CSV manifest export.'], ['What analytics do I get?', 'Registrations and revenue trends over time, per-event performance, tier mix, attendee distribution across categories, portfolio phase split (upcoming / live / completed) and conversion against listed capacity.']]]
             ];
             return topNav('')
-                + '<div class="wrap phead"><div class="crumb"><a href="#/">Home</a>' + ic('chevR', 12) + ' <span>Help & FAQ</span></div>'
+                + '<div class="wrap phead" style="max-width:900px;margin:0 auto"><div class="crumb"><a href="#/">Home</a>' + ic('chevR', 12) + ' <span>Help & FAQ</span></div>'
                 + '<span class="eyebrow" style="margin-top:12px">' + ic('help', 13) + ' Support Center</span><h1>Help & Frequently Asked Questions</h1>'
                 + '<p class="sub">Everything about ticketing, payments and security on the Eventora mesh. Still stuck? <a href="#/contact" style="color:var(--cyan2)">Contact the team</a>.</p></div>'
                 + '<div class="wrap" style="padding-bottom:50px;max-width:900px">'
@@ -1120,7 +1162,7 @@
         }
         function PrivacyView() {
             return topNav('')
-                + '<div class="wrap phead"><div class="crumb"><a href="#/">Home</a>' + ic('chevR', 12) + ' <span>Privacy Policy</span></div>'
+                + '<div class="wrap phead" style="max-width:860px;margin:0 auto"><div class="crumb"><a href="#/">Home</a>' + ic('chevR', 12) + ' <span>Privacy Policy</span></div>'
                 + '<span class="eyebrow" style="margin-top:12px">' + ic('shield', 13) + ' Legal</span><h1>Privacy Policy</h1>'
                 + '<p class="sub">How Eventora collects, uses and protects information across the mesh.</p></div>'
                 + '<div class="wrap policy" style="padding-bottom:50px;max-width:860px">'
@@ -1146,7 +1188,7 @@
         }
         function TermsView() {
             return topNav('')
-                + '<div class="wrap phead"><div class="crumb"><a href="#/">Home</a>' + ic('chevR', 12) + ' <span>Terms & Conditions</span></div>'
+                + '<div class="wrap phead" style="max-width:860px;margin:0 auto"><div class="crumb"><a href="#/">Home</a>' + ic('chevR', 12) + ' <span>Terms & Conditions</span></div>'
                 + '<span class="eyebrow" style="margin-top:12px">' + ic('brief', 13) + ' Legal</span><h1>Terms & Conditions</h1>'
                 + '<p class="sub">The rules of the arena \u2014 for attendees, organizers and the platform.</p></div>'
                 + '<div class="wrap policy" style="padding-bottom:50px;max-width:860px">'
@@ -1258,7 +1300,7 @@
                 + '<div class="field"><label>Full Name</label><input class="inp" name="name" value="' + esc(u.name) + '" required></div>'
                 + '<div class="field"><label>Email (pass delivery)</label><input class="inp" name="email" type="email" value="' + esc(u.email) + '" required></div></div>'
                 + (priceFrom(ev) > 0 ? '<label class="f-label">4 \u00b7 Payment Method (' + evCur(ev) + ')</label><div class="paysel" style="margin-bottom:14px">'
-                    + payMethodsFor(evCur(ev)).map(m => '<div class="paycard ' + (CO.pay === m[0] ? 'act' : '') + '" data-action="co-pay" data-p="' + m[0] + '"><span class="pd" style="background:' + m[2] + '22;color:' + m[2] + ';border-color:' + m[2] + '44">' + (m[3] === 'card' ? ic('card', 16) : m[3]) + '</span><div class="pd-t"><b>' + m[1] + '</b><span>' + m[4] + '</span></div><span class="pd-ck">' + ic('checkc', 16) + '</span></div>').join('')
+                    + payMethodsFor(evCur(ev)).map(m => '<div class="paycard ' + (CO.pay === m[0] ? 'act' : '') + '" data-action="co-pay" data-p="' + m[0] + '"><span class="pd pd-logo">' + payLogoSVG(m[0]) + '</span><div class="pd-t"><b>' + m[1] + '</b><span>' + m[4] + '</span></div><span class="pd-ck">' + ic('checkc', 16) + '</span></div>').join('')
                     + '</div>' + (!CONFIG.payments.createSessionUrl ? '<div class="gcfg" style="margin-top:6px"><b>Online payment gateway is not connected yet.</b><br>Paid checkout requires a real provider session \u2014 no simulated transactions are ever created. Configure <code>window.EVENTORA_CONFIG.payments</code> with your gateway\u2019s <code>createSessionUrl</code> and <code>verifyUrl</code>. Attendees anywhere in the world can pay by card (or PayPal); Bangladesh-priced (BDT) events also offer bKash / Nagad / Rocket. Secrets stay server-side. Free 0-amount RSVPs check out instantly without a gateway.</div>' : '') : '')
                 + '<div class="err-t" id="co-err"></div></form></div></div>'
                 + '<div><div class="glass side-card" style="position:static"><span class="eyebrow" style="margin-bottom:14px">' + ic('card', 13) + ' Order Summary</span>'
@@ -1406,26 +1448,51 @@
         }
         function renderPayResult(host, order, state, regId) {
             const ev = db.events.find(e => e.id === order.eventId);
-            const title = state === 'paid' ? 'Payment verified \u2014 you\u2019re in!' : state === 'ended' ? 'Event Ended \u2014 full refund due' : state === 'cancelled' ? 'Payment cancelled' : state === 'soldout' ? 'Tickets sold out' : 'Payment failed';
+            const title = state === 'paid' ? 'Payment verified \u2014 you\u2019re in!' : state === 'ended' ? 'Event Ended \u2014 full refund due' : state === 'cancelled' ? 'You cancelled the payment' : state === 'soldout' ? 'Tickets sold out' : 'Payment failed';
             const body = state === 'paid' ? 'Your payment of ' + fmtMoney(order.total) + ' was verified with the provider and your pass' + (order.quantity > 1 ? 'es are' : ' is') + ' ready.'
                 : state === 'ended' ? 'This event finished before fulfilment. Your payment of ' + fmtMoney(order.total) + ' will be refunded in full by the merchant \u2014 no ticket was issued.'
-                    : state === 'cancelled' ? 'No charge was made and no ticket was issued. You can retry any time while tickets remain.'
+                    : state === 'cancelled' ? 'You closed the payment window before it completed \u2014 no charge was made and no ticket was issued. You can retry any time while tickets remain.'
                         : state === 'soldout' ? 'Your payment will be refunded in full \u2014 the tier sold out before fulfilment. No ticket was issued.'
                             : 'The provider declined or could not process the transaction. No charge was completed and no ticket was issued.';
             const ring = state === 'paid' ? '' : state === 'cancelled' || state === 'ended' ? 'amb' : 'red';
-            const icon = state === 'paid' ? 'check' : 'ban';
-            const u = session(), dashHref = u ? ROLE_HOME[u.role] : '#/';
+            const icon = state === 'paid' ? 'check' : state === 'cancelled' ? 'x' : 'ban';
+            const u = session(), dashHref = u ? ROLE_HOME[u.role] : '#/events';
             const actions = state === 'paid' ? '<button class="btn btn-p" data-go="#/success/' + regId + '">' + ic('ticket', 14) + ' View My Pass</button><a class="btn btn-g" href="#/attendee/tickets">My Tickets</a>'
                 : state === 'ended' ? '<a class="btn btn-g" href="#/events">Browse Events</a><button class="btn btn-g" data-go="#/profile?tab=billing">Billing & Orders</button><a class="btn btn-g" href="' + dashHref + '">' + ic('grid', 14) + ' Back to Dashboard</a>'
                     : '<a class="btn btn-p" href="#/checkout/' + order.eventId + '?tier=' + (order.tierId || '') + '">' + ic('refresh', 14) + ' Try Again</a><button class="btn btn-g" data-go="#/profile?tab=billing">Billing & Orders</button><a class="btn btn-g" href="' + dashHref + '">' + ic('grid', 14) + ' Back to Dashboard</a>';
+            /* Cancelled checkouts get a brief, realistic "hang on this screen, then bounce back"
+               beat \u2014 like most real payment gateways \u2014 instead of just parking the attendee
+               on a dead-end result page. Auto-redirect is cancellable and pushed through the
+               shared `timers` array so it's automatically cleared if the user navigates away
+               before it fires. */
+            const dashLabel = u ? 'your dashboard' : 'Browse Events';
+            const redirectNote = state === 'cancelled' ? '<div class="pay-redirect" id="pay-redirect">'
+                + '<div class="pay-redirect-bar"><div class="pay-redirect-fill" id="pay-redirect-fill"></div></div>'
+                + '<p class="small mut" id="pay-redirect-txt">Taking you back to ' + esc(dashLabel) + ' in <b id="pay-redirect-s">6</b>s\u2026</p>'
+                + '<button type="button" class="btn btn-g sm" id="pay-redirect-stop">' + ic('x', 13) + ' Stay on this page</button>'
+                + '</div>' : '';
             host.innerHTML = '<div class="glass" style="max-width:560px;margin:60px auto;padding:34px;text-align:center">'
                 + '<div class="okring ' + ring + '">' + ic(icon, 34, 2.4) + '</div>'
                 + '<h1 style="font-size:clamp(22px,4vw,28px);letter-spacing:-.02em">' + title + '</h1>'
                 + '<p class="mut" style="margin:10px 0 6px">' + body + '</p>'
                 + (ev ? '<p class="small mut" style="margin-bottom:6px">' + esc(ev.title) + ' \u00b7 ' + esc(order.tierName || '') + ' \u00d7 ' + order.quantity + '</p>' : '')
                 + '<p class="small mut" style="margin-bottom:20px">Order ' + payPill(order.status) + (order.txnId ? ' \u00b7 Txn <span class="mono" style="color:#7dd3fc">' + esc(order.txnId) + '</span>' : '') + ' \u00b7 ' + fmtMoney(order.total) + '</p>'
-                + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' + actions + '</div></div>';
+                + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' + actions + '</div>'
+                + redirectNote + '</div>';
             document.title = 'Payment ' + (state === 'paid' ? 'Successful' : state.charAt(0).toUpperCase() + state.slice(1)) + ' \u2014 Eventora';
+            if (state === 'cancelled') {
+                let secs = 6;
+                const fill = document.getElementById('pay-redirect-fill'), sEl = document.getElementById('pay-redirect-s'), note = document.getElementById('pay-redirect'), stopBtn = document.getElementById('pay-redirect-stop');
+                if (fill) fill.style.transitionDuration = (secs) + 's';
+                requestAnimationFrame(() => { if (fill) fill.style.width = '0%' });
+                const iv = setInterval(() => {
+                    secs -= 1;
+                    if (sEl) sEl.textContent = String(Math.max(secs, 0));
+                    if (secs <= 0) { clearInterval(iv); location.hash = dashHref }
+                }, 1000);
+                timers.push(iv);
+                if (stopBtn) stopBtn.addEventListener('click', () => { clearInterval(iv); if (note) note.remove() });
+            }
         }
         function SuccessView(regId) {
             const u = session(); if (!u) return guardLogin();
@@ -2455,6 +2522,7 @@
             'mobile-nav': () => toggleMMenu(),
             'signout': () => signOut(),
             'google-signin': (dd) => googleSignIn(dd.tab, dd.role),
+            'goto-login': () => { closeModal(); location.hash = '#/login' },
             'pw-toggle': (dd, el) => {
                 const inp = document.getElementById(dd.target); if (!inp) return;
                 const showing = inp.type === 'text';
@@ -2917,11 +2985,12 @@
                 const lastSignIn = Date.parse(authUser.last_sign_in_at || authUser.created_at || '');
                 const isBrandNew = created && Math.abs(lastSignIn - created) < 8000;
                 if (!isBrandNew) {
+                    const dupEmail = authUser.email || (u && u.email) || '';
                     db.meta.sessionUserId = null; persist();
                     try { await sb.auth.signOut() } catch (e) { }
-                    toast('An account with this Google email already exists \u2014 please sign in instead.', 'warn');
                     location.replace('#/login');
                     lastRenderedHash = null; render();
+                    openDuplicateAccountModal(dupEmail);
                     return;
                 }
                 if (intent.role && intent.role !== u.role) {
