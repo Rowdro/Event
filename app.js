@@ -256,8 +256,8 @@
            local Bangladesh mobile wallets alongside cards; every other currency shows card +
            PayPal, which work for a buyer anywhere in the world. Same single gateway integration
            (createSessionUrl/verifyUrl) \u2014 just different rails offered per currency. */
-        const PAY_METHODS_BDT = [['bkash', 'bKash', '#e2136e'], ['nagad', 'Nagad', '#f6921e'], ['rocket', 'Rocket', '#8c3494'], ['card', 'Visa / Mastercard', '#38bdf8']];
-        const PAY_METHODS_INTL = [['card', 'Visa / Mastercard', '#38bdf8'], ['paypal', 'PayPal', '#003087']];
+        const PAY_METHODS_BDT = [['bkash', 'bKash', '#e2136e', 'bKash', 'Mobile wallet \u00b7 Instant'], ['nagad', 'Nagad', '#f6921e', 'Nagad', 'Mobile wallet \u00b7 Instant'], ['rocket', 'Rocket', '#8c3494', 'Rocket', 'Mobile wallet \u00b7 Instant'], ['card', 'Visa / Mastercard', '#38bdf8', 'card', 'Ending redirect to your bank']];
+        const PAY_METHODS_INTL = [['card', 'Visa / Mastercard', '#38bdf8', 'card', 'Ending redirect to your bank'], ['paypal', 'PayPal', '#003087', 'PayPal', 'Pay via balance, bank or card']];
         const payMethodsFor = code => code === 'BDT' ? PAY_METHODS_BDT : PAY_METHODS_INTL;
         const PAY_METHODS = PAY_METHODS_BDT; /* legacy alias for spots without currency context */
         const orderByRef = ref => db.orders.find(o => o.intent && o.intent.ref === ref);
@@ -529,7 +529,7 @@
                 + (showAttendees ? '<div><h5>Attendees</h5><a href="#/attendee/browse">Browse Events</a><a href="#/attendee/tickets">My Tickets</a><a href="#/attendee/registrations">My Registrations</a><a href="#/attendee/wishlist">Wishlist</a></div>' : '')
                 + (showOrganizers ? '<div><h5>Organizers</h5><a href="#/organizer/dashboard">Organizer Dashboard</a><a href="#/organizer/events/create">Create Event</a><a href="#/organizer/events">Manage Events</a><a href="#/organizer/analytics">Analytics</a></div>' : '')
                 + '<div><h5>Support</h5><a href="#/faq">Help & FAQ</a><a href="#/contact">Contact</a><a href="#/privacy">Privacy Policy</a><a href="#/terms">Terms & Conditions</a></div>'
-                + '</div><div class="lfoot-bot"><span>\u00a9 2026 Eventora. All rights reserved \u2014 Rowdro Mrong \u00b7 ISO 27001 Certified \u00b7 SOC 2 Type II Compliant</span><span><a href="#/login" style="color:var(--body)">Sign In</a> \u00b7 <a href="#/register" style="color:var(--body)">Register Stage</a></span></div></div></footer>';
+                + '</div><div class="lfoot-bot"><span>\u00a9 2026 Eventora. All rights reserved \u2014 Rowdro Mrong</span><span><a href="#/login" style="color:var(--body)">Sign In</a> \u00b7 <a href="#/register" style="color:var(--body)">Register Stage</a></span></div></div></footer>';
         }
         function publicFooter() { return footerHTML(null); }
         function consoleFooter() { const u = session(); return footerHTML(u ? u.role : null); }
@@ -964,7 +964,7 @@
                 + '<h2>Ready to Orchestrate at the Highest Tier of Production?</h2>'
                 + '<p>Get integrated with Eventora OS in minutes. Access invitation-only gate telemetry, dynamic capacity escalation, and our curated production partner directory.</p>'
                 + '<div id="cta-zone"><form data-form="request-access"><div class="cta-form"><input class="inp" id="cta-email" type="email" placeholder="Enter access email address\u2026" required><button class="btn btn-p" type="submit">Request Access</button></div></form>'
-                + '<p class="small mut" style="margin-top:12px">' + ic('lock', 12) + ' No lock-in contracts \u00b7 SOC 2 Type II Compliant</p></div></div></section>'
+                + '<p class="small mut" style="margin-top:12px">' + ic('lock', 12) + ' No lock-in contracts</p></div></div></section>'
                 + publicFooter();
         }
         function ExploreView(q) {
@@ -1069,7 +1069,7 @@
                 + '<p class="mut" style="line-height:1.8">Interfaces are not flat planes; they are illuminated multi-layered optical lenses suspended over deep spatial fields. Specular light leaks, refractive edge highlights and crisp geometric legibility keep high information density effortless to scan. We believe production software should feel like the production itself.</p></div>'
                 + '<div class="glass" style="padding:26px"><span class="eyebrow">' + ic('shield', 13) + ' Trust & Compliance</span>'
                 + '<h3 style="font-size:20px;margin:12px 0 10px">Zero-Trust by Default</h3>'
-                + '<p class="mut" style="line-height:1.8">Every pass is sealed with rotating 256-bit ECDSA ciphers. Biometric templates never leave the venue edge node. Settlement runs on transparent T+0 to T+2 windows with automated dispute buffers, settled in ' + CUR + ' BDT. ISO 27001 certified \u00b7 SOC 2 Type II compliant.</p></div></div>'
+                + '<p class="mut" style="line-height:1.8">Every pass is sealed with rotating 256-bit ECDSA ciphers. Biometric templates never leave the venue edge node. Settlement runs on transparent T+0 to T+2 windows with automated dispute buffers, settled in ' + CUR + ' BDT.</p></div></div>'
                 + '<div class="glass" style="padding:26px"><span class="eyebrow">' + ic('layers', 13) + ' The Stack</span>'
                 + '<div class="grid3 mt24">'
                 + [['zap', 'Curation Engine', 'Multi-tier arenas, gated VIP zones and collision-free seating.'], ['qr', 'Glass Ticketing', 'Rotating QR, NFC encircle passes and instant revocation.'], ['radio', 'Gate Telemetry', '800+ admissions/min, live congestion triage, zero-latency RFID.']].map(f => '<div><span style="width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.35);color:#a5b4fc;margin-bottom:14px">' + ic(f[0], 20) + '</span><b style="font:700 15px var(--fd)">' + f[1] + '</b><p class="small mut mt8">' + f[2] + '</p></div>').join('')
@@ -1239,7 +1239,9 @@
             const c = catOf(ev.category);
             return topNav('events')
                 + '<div class="wrap phead"><span class="eyebrow">' + ic('ticket', 13) + ' Registration \u00b7 ' + esc(c.name) + '</span><h1>' + (priceFrom(ev) === 0 ? 'RSVP \u2014 Free' : 'Claim Your Pass') + '</h1>'
-                + '<p class="sub">' + esc(ev.title) + ' \u00b7 ' + fmtRange(ev.startDate, ev.endDate) + ' \u00b7 ' + esc(ev.venue) + '</p></div>'
+                + '<p class="sub">' + esc(ev.title) + ' \u00b7 ' + fmtRange(ev.startDate, ev.endDate) + ' \u00b7 ' + esc(ev.venue) + '</p>'
+                + '<div class="co-steps">' + ['Tier', 'Quantity', 'Details', priceFrom(ev) === 0 ? 'Confirm' : 'Payment'].map((s, i) => '<span class="co-step"><b>' + (i + 1) + '</b>' + s + '</span>').join('<i></i>') + '</div>'
+                + '</div>'
                 + '<div class="wrap co-grid"><div><div class="glass" style="padding:22px">'
                 + '<h3 style="font-size:16px;margin-bottom:16px">1 \u00b7 Select Tier</h3>'
                 + tiers.map(t => {
@@ -1256,7 +1258,7 @@
                 + '<div class="field"><label>Full Name</label><input class="inp" name="name" value="' + esc(u.name) + '" required></div>'
                 + '<div class="field"><label>Email (pass delivery)</label><input class="inp" name="email" type="email" value="' + esc(u.email) + '" required></div></div>'
                 + (priceFrom(ev) > 0 ? '<label class="f-label">4 \u00b7 Payment Method (' + evCur(ev) + ')</label><div class="paysel" style="margin-bottom:14px">'
-                    + payMethodsFor(evCur(ev)).map(m => '<div class="paycard ' + (CO.pay === m[0] ? 'act' : '') + '" data-action="co-pay" data-p="' + m[0] + '"><span class="pd" style="background:' + m[2] + ';box-shadow:0 0 8px ' + m[2] + '66"></span>' + m[1] + '</div>').join('')
+                    + payMethodsFor(evCur(ev)).map(m => '<div class="paycard ' + (CO.pay === m[0] ? 'act' : '') + '" data-action="co-pay" data-p="' + m[0] + '"><span class="pd" style="background:' + m[2] + '22;color:' + m[2] + ';border-color:' + m[2] + '44">' + (m[3] === 'card' ? ic('card', 16) : m[3]) + '</span><div class="pd-t"><b>' + m[1] + '</b><span>' + m[4] + '</span></div><span class="pd-ck">' + ic('checkc', 16) + '</span></div>').join('')
                     + '</div>' + (!CONFIG.payments.createSessionUrl ? '<div class="gcfg" style="margin-top:6px"><b>Online payment gateway is not connected yet.</b><br>Paid checkout requires a real provider session \u2014 no simulated transactions are ever created. Configure <code>window.EVENTORA_CONFIG.payments</code> with your gateway\u2019s <code>createSessionUrl</code> and <code>verifyUrl</code>. Attendees anywhere in the world can pay by card (or PayPal); Bangladesh-priced (BDT) events also offer bKash / Nagad / Rocket. Secrets stay server-side. Free 0-amount RSVPs check out instantly without a gateway.</div>' : '') : '')
                 + '<div class="err-t" id="co-err"></div></form></div></div>'
                 + '<div><div class="glass side-card" style="position:static"><span class="eyebrow" style="margin-bottom:14px">' + ic('card', 13) + ' Order Summary</span>'
@@ -1329,7 +1331,14 @@
                 body: JSON.stringify({
                     ref, amount: tot, currency: code, method: CO.pay, gateway: CONFIG.payments.gatewayName || 'auto',
                     description: ev.title + ' \u2014 ' + t.name + ' \u00d7 ' + CO.qty, customer: { name, email },
-                    callbackUrl: location.origin + location.pathname + '#/payment/callback'
+                    /* SSLCommerz (and most gateways) redirect to a distinct URL per outcome rather
+                       than one shared callback \u2014 send all three so the backend can pass them
+                       straight through as success_url/fail_url/cancel_url. callbackUrl is kept for
+                       backends still built against the single-URL shape. */
+                    callbackUrl: paymentReturnUrl(),
+                    successUrl: paymentReturnUrl('success'),
+                    failUrl: paymentReturnUrl('fail'),
+                    cancelUrl: paymentReturnUrl('cancel')
                 })
             })
                 .then(r => r.json().catch(() => ({})).then(j => ({ ok: r.ok, status: r.status, j })))
@@ -1363,6 +1372,11 @@
             notify(ev.organizerId, 'New ' + t.name + ' sale \u2014 ' + ev.title, (u ? u.name : 'Attendee') + ' \u00b7 ' + fmtMoney(order.total), 'sale', '#/organizer/attendees?event=' + ev.id);
             persist(); return { state: 'paid', regId: first.id };
         }
+        /* One callback URL per outcome, so the gateway's own redirect always carries the
+           right status \u2014 we don't have to guess it from whatever the provider appends. */
+        function paymentReturnUrl(status) {
+            return location.origin + location.pathname + '#/payment/callback' + (status ? '?status=' + status : '');
+        }
         function PaymentCallbackView(q) {
             const ref = q.get('ref') || '', provStatus = (q.get('status') || '').toLowerCase(), txn = q.get('txn') || q.get('transactionId') || '';
             after(() => {
@@ -1373,7 +1387,7 @@
                 if (order.status === 'refunded' || order.status === 'failed' || order.status === 'cancelled') { renderPayResult(host, order, order.status, order.registrationId); return }
                 if (!CONFIG.payments.verifyUrl) {
                     host.innerHTML = '<div class="glass" style="max-width:560px;margin:60px auto;padding:30px;text-align:center">' + payPill(order.status)
-                        + '<h2 style="margin:14px 0 8px">Verification endpoint not configured</h2><p class="mut">The gateway returned reference <span class="mono" style="color:#7dd3fc">' + esc(ref) + '</span>. Set <code>EVENTORA_CONFIG.payments.verifyUrl</code> so this transaction can be verified server-side before any ticket is issued. The order remains <b>Pending</b> \u2014 no ticket has been generated.</p><a class="btn btn-p mt16" href="#/profile">Open Billing & Orders</a></div>';
+                        + '<h2 style="margin:14px 0 8px">Verification endpoint not configured</h2><p class="mut">The gateway returned reference <span class="mono" style="color:#7dd3fc">' + esc(ref) + '</span>. Set <code>EVENTORA_CONFIG.payments.verifyUrl</code> so this transaction can be verified server-side before any ticket is issued. The order remains <b>Pending</b> \u2014 no ticket has been generated.</p><a class="btn btn-p mt16" href="#/profile?tab=billing">Open Billing & Orders</a></div>';
                     return;
                 }
                 host.innerHTML = '<div class="glass" style="max-width:520px;margin:70px auto;padding:40px;text-align:center"><span class="spin" style="width:26px;height:26px;border-width:3px;margin:0 auto 18px;display:block"></span><h2 style="font-size:19px">Verifying your payment\u2026</h2><p class="mut" style="margin-top:8px">Confirming the transaction with the provider before issuing your pass. Reference <span class="mono" style="color:#7dd3fc">' + esc(ref) + '</span></p></div>';
@@ -1385,7 +1399,7 @@
                     })
                     .catch(() => {
                         host.innerHTML = '<div class="glass" style="max-width:560px;margin:60px auto;padding:30px;text-align:center">' + payPill(order.status)
-                            + '<h2 style="margin:14px 0 8px">Verification unavailable</h2><p class="mut">We couldn\u2019t reach the verification service, so your order stays <b>Pending</b> \u2014 nothing was fulfilled and no ticket was issued. Try again from Billing & Orders in a moment.</p><a class="btn btn-p mt16" href="#/profile">Open Billing & Orders</a></div>';
+                            + '<h2 style="margin:14px 0 8px">Verification unavailable</h2><p class="mut">We couldn\u2019t reach the verification service, so your order stays <b>Pending</b> \u2014 nothing was fulfilled and no ticket was issued. Try again from Billing & Orders in a moment.</p><a class="btn btn-p mt16" href="#/profile?tab=billing">Open Billing & Orders</a></div>';
                     });
             });
             return topNav('') + '<div class="wrap" style="min-height:50vh"><div id="payres"></div></div>' + (session() ? consoleFooter() : publicFooter());
@@ -1400,9 +1414,10 @@
                             : 'The provider declined or could not process the transaction. No charge was completed and no ticket was issued.';
             const ring = state === 'paid' ? '' : state === 'cancelled' || state === 'ended' ? 'amb' : 'red';
             const icon = state === 'paid' ? 'check' : 'ban';
+            const u = session(), dashHref = u ? ROLE_HOME[u.role] : '#/';
             const actions = state === 'paid' ? '<button class="btn btn-p" data-go="#/success/' + regId + '">' + ic('ticket', 14) + ' View My Pass</button><a class="btn btn-g" href="#/attendee/tickets">My Tickets</a>'
-                : state === 'ended' ? '<a class="btn btn-g" href="#/events">Browse Events</a><button class="btn btn-g" data-go="#/profile">Billing & Orders</button>'
-                    : '<a class="btn btn-p" href="#/checkout/' + order.eventId + '?tier=' + (order.tierId || '') + '">' + ic('refresh', 14) + ' Try Again</a><button class="btn btn-g" data-go="#/profile">Billing & Orders</button>';
+                : state === 'ended' ? '<a class="btn btn-g" href="#/events">Browse Events</a><button class="btn btn-g" data-go="#/profile?tab=billing">Billing & Orders</button><a class="btn btn-g" href="' + dashHref + '">' + ic('grid', 14) + ' Back to Dashboard</a>'
+                    : '<a class="btn btn-p" href="#/checkout/' + order.eventId + '?tier=' + (order.tierId || '') + '">' + ic('refresh', 14) + ' Try Again</a><button class="btn btn-g" data-go="#/profile?tab=billing">Billing & Orders</button><a class="btn btn-g" href="' + dashHref + '">' + ic('grid', 14) + ' Back to Dashboard</a>';
             host.innerHTML = '<div class="glass" style="max-width:560px;margin:60px auto;padding:34px;text-align:center">'
                 + '<div class="okring ' + ring + '">' + ic(icon, 34, 2.4) + '</div>'
                 + '<h1 style="font-size:clamp(22px,4vw,28px);letter-spacing:-.02em">' + title + '</h1>'
@@ -1565,11 +1580,16 @@
                     : emptyState('bell', 'All clear', 'No notifications in this filter right now.', '#/events', 'Browse Events'))
                 + '</div>' + consoleFooter();
         }
-        function ProfileView() {
+        function ProfileView(q) {
             const u = session(); if (!u) return guardLogin();
             const myOrders = db.orders.filter(o => o.userId === u.id).sort((a, b) => b.created_at.localeCompare(a.created_at));
+            if (q && q.get('tab') === 'billing') after(() => {
+                const el = document.getElementById('billing-orders'); if (!el) return;
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                el.classList.add('flash-in'); setTimeout(() => el.classList.remove('flash-in'), 1600);
+            });
             return topNav('')
-                + '<div class="wrap phead"><span class="eyebrow">' + ic('user', 13) + ' Account Core</span><h1>Profile & Settings</h1></div>'
+                + '<div class="wrap phead" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap"><div><span class="eyebrow">' + ic('user', 13) + ' Account Core</span><h1>Profile & Settings</h1></div><a class="btn btn-g" href="' + ROLE_HOME[u.role] + '">' + ic('grid', 15) + ' Back to Dashboard</a></div>'
                 + '<div class="wrap grid2" style="padding-bottom:50px;align-items:start">'
                 + '<div class="glass" style="padding:26px">'
                 + '<div style="display:flex;gap:16px;align-items:center;margin-bottom:22px;flex-wrap:wrap">'
@@ -1586,7 +1606,7 @@
                 + (u.role === 'organizer' ? '<div class="field"><label>Organization</label><input class="inp" name="org" value="' + esc(u.org || '') + '"></div>' : '')
                 + '<button class="btn btn-p" type="submit">' + ic('check', 15) + ' Save Profile</button></form></div>'
                 + '<div style="display:flex;flex-direction:column;gap:20px">'
-                + '<div class="glass" style="padding:22px"><h3 style="font-size:15px;margin-bottom:12px">Billing & Orders</h3>'
+                + '<div class="glass" id="billing-orders" style="padding:22px"><h3 style="font-size:15px;margin-bottom:12px">Billing & Orders</h3>'
                 + (myOrders.length ? '<div style="display:flex;flex-direction:column">' + myOrders.slice(0, 8).map(o => {
                     const ev = db.events.find(e => e.id === o.eventId);
                     return '<div class="row-b" style="padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)"><div style="min-width:0"><b style="font:600 13px var(--fd);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(ev ? ev.title : '\u2014') + '</b>'
@@ -2338,7 +2358,7 @@
             if (k === 'success') return SuccessView(seg[1]);
             if (k === 'payment') return PaymentCallbackView(q);
             if (k === 'notifications') { if (!u) return guardLogin(); return NotificationsView() }
-            if (k === 'profile') { if (!u) return guardLogin(); return ProfileView() }
+            if (k === 'profile') { if (!u) return guardLogin(); return ProfileView(q) }
             if (k === 'attendee') {
                 if (!u) return guardLogin();
                 if (u.role !== 'attendee') { toast('That area is restricted to attendee accounts \u2014 redirected to your dashboard.', 'warn'); location.hash = ROLE_HOME[u.role]; return '' }
@@ -2510,7 +2530,11 @@
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         ref: o.intent.ref, amount: o.total, currency: o.currency || CUR_DEFAULT, method: o.intent.method,
-                        description: 'Eventora pending order', callbackUrl: location.origin + location.pathname + '#/payment/callback'
+                        description: 'Eventora pending order',
+                        callbackUrl: paymentReturnUrl(),
+                        successUrl: paymentReturnUrl('success'),
+                        failUrl: paymentReturnUrl('fail'),
+                        cancelUrl: paymentReturnUrl('cancel')
                     })
                 })
                     .then(r => r.json().catch(() => ({})).then(j => ({ ok: r.ok, j })))
