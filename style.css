@@ -2703,15 +2703,23 @@
             border-radius: 10px;
             display: grid;
             place-items: center;
+            padding: 5px;
             background: rgba(255, 255, 255, .05);
             border: 1px solid var(--line);
             color: var(--body);
             transition: all .18s;
-            cursor: pointer
+            cursor: pointer;
+            overflow: hidden
+        }
+
+        .soc svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 6px
         }
 
         .soc:hover {
-            color: #fff;
             border-color: rgba(139, 92, 246, .55);
             background: rgba(99, 102, 241, .14);
             transform: translateY(-2px);
@@ -4895,17 +4903,8 @@
         }
 
         @media (max-width:1200px) {
-            .search-pill span {
-                display: none
-            }
-
-            .search-pill kbd {
-                display: none
-            }
-
             .search-pill {
-                min-width: 0;
-                padding: 0 12px
+                display: none
             }
 
             .syspill {
@@ -4923,6 +4922,27 @@
             }
 
             .nav-right {
+                margin-left: auto
+            }
+        }
+
+        /* Console (logged-in) headers carry more chrome than the public nav \u2014 extra
+           nav-links plus the notification bell and account beat \u2014 so on tablet / small-laptop
+           widths that combination can overflow past the sticky header's edge before the public
+           680px breakpoint kicks in. Since the page disables horizontal scroll, anything pushed
+           past that edge (commonly the hamburger, being last in the row) becomes invisible with
+           no way to reach it. Switch console pages to the hamburger much earlier to keep the
+           row from ever getting that tight. */
+        @media (max-width:900px) {
+            .cnav .nav-links {
+                display: none
+            }
+
+            .cnav .mmenu-btn {
+                display: grid
+            }
+
+            .cnav .nav-right {
                 margin-left: auto
             }
         }
@@ -5015,6 +5035,10 @@
             .nav-in {
                 padding: 0 16px;
                 gap: 10px
+            }
+
+            .search-pill {
+                display: none
             }
 
             .ubeat .uinfo {
@@ -5174,6 +5198,14 @@
         @media (max-width:400px) {
             .nav-in {
                 padding: 0 12px;
+                gap: 8px
+            }
+
+            .brand span {
+                display: none
+            }
+
+            .nav-right {
                 gap: 8px
             }
 
